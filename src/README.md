@@ -21,6 +21,15 @@ A super simple FastAPI application that allows students to view and sign up for 
    python app.py
    ```
 
+   If you see `[Errno 98] Address already in use`, either:
+   - stop the process using the port (e.g. `fuser -k 8000/tcp` or `lsof -i :8000` + `kill <PID>`), or
+   - start on another port:
+     ```
+     HOST=127.0.0.1 PORT=8001 python app.py
+     ```
+
+   The app also retries ports `8000..8009` automatically when started this way.
+
 3. Open your browser and go to:
    - API documentation: http://localhost:8000/docs
    - Alternative documentation: http://localhost:8000/redoc

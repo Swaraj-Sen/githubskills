@@ -65,3 +65,26 @@ def signup_for_activity(activity_name: str, email: str):
     # Add student
     activity["participants"].append(email)
     return {"message": f"Signed up {email} for {activity_name}"}
+
+
+if __name__ == "__main__":
+    import errno
+    import uvicorn
+
+    host = os.getenv("HOST", "0.0.0.0")
+    start_port = int(os.getenv("PORT", "8000"))
+    max_retries = 10
+
+    for attempt in range(max_retries):
+        port = start_port + attempt
+        try:
+            print(f"Starting app on {host}:{port} (attempt {attempt + 1}/{max_retries})")
+            uvicorn.run(app, host=host, port=port)
+            break
+        except OSError as exc:
+            if exc.errno == errno.EADDRINUSE:
+                print(f"Port {port} is already in use. Trying the next port...")
+                continue
+            raise
+    else:
+        raise RuntimeError(f"Unable to bind to ports {start_port}-{start_port + max_retries - 1}")
